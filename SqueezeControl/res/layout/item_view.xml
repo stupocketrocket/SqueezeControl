@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <ImageView
+        android:id="@+id/item_icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentTop="true"
+        android:adjustViewBounds="true"
+        android:contentDescription="Android"
+        android:maxHeight="200dp"
+        android:maxWidth="200dp"
+        android:src="@drawable/ic_android" />
+
+    <TextView
+        android:id="@+id/item_textAlbumName"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_marginLeft="18dp"
+        android:layout_toRightOf="@+id/item_icon"
+        android:text="Album Name"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <TextView
+        android:id="@+id/item_textArtist"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/item_textAlbumName"
+        android:layout_below="@+id/item_textAlbumName"
+        android:text="Artist"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <TextView
+        android:id="@+id/item_textYear"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignBaseline="@+id/item_textArtist"
+        android:layout_alignBottom="@+id/item_textArtist"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="14dp"
+        android:text="Year"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+</RelativeLayout>
