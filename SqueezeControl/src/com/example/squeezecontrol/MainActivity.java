@@ -37,19 +37,19 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
-
-	//private static final String URL = "http://192.168.0.22:9090/jsonrpc.js";
+public class MainActivity extends Activity 
+{
 	private static final String URL = "http://10.0.2.2:9001/jsonrpc.js";	
 	private ProgressBar progressBar;
 	public static String strHostName = "10.0.2.2";
 	public static int iPortNumber = 9001;
-	private String strURL = null;
+	private static String strURL = null;
 	private String strURLFormat = new String("http://%s:%d/jsonrpc.js");
 	private EditText editHostName;
 	private EditText editPortNumber;
 	
 	private List<CAlbum> m_albumList = new ArrayList<CAlbum>();
+	private List<CSong> m_songList = new ArrayList<CSong>();	
 	
 	
 	@Override
@@ -139,10 +139,37 @@ public class MainActivity extends Activity {
 				    
 				    RedrawAlbumList();
 				    RegisterClickCallback();
-				    
-				    //http://localhost:9001/music/7d10afd0/cover_75x75.jpg
-				    //http://localhost:9001/music/7d10afd0/cover_350x350.jpg
 				}
+			}
+			else
+			if (params.contains("songs"))
+			{
+				//{"params":[null,["songs","0","100000","tags:psdtyJualekojwxNpg","album_id:1"]],"method":"slim.request","id":1,"result":{"count":11,"titles_loop":[{"id":7,"title":"Digital Lion","genre_id":"1","artist_id":"4","duration":"287.016","tracknum":"7","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/07%20James%20Blake%20-%20Digital%20Lion.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":6,"title":"Dlm","genre_id":"1","artist_id":"4","duration":"145.92","tracknum":"6","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/06%20James%20Blake%20-%20Dlm.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":11,"title":"Every Day I Ran (Bonus Track)","genre_id":"1","artist_id":"4","duration":"204.409","tracknum":"11","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/11%20James%20Blake%20-%20Every%20Day%20I%20Ran%20(Bonus%20Track).mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","comment":"(Bonus Track) / (Bonus Track)","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":2,"title":"I Am Sold","genre_id":"1","artist_id":"4","duration":"244.476","tracknum":"2","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/02%20James%20Blake%20-%20I%20Am%20Sold.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":3,"title":"Life Round Here","genre_id":"1","artist_id":"4","duration":"217.117","tracknum":"3","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/03%20James%20Blake%20-%20Life%20Round%20Here.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":10,"title":"Our Love Comes Back","genre_id":"1","artist_id":"4","duration":"219.021","tracknum":"10","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/10%20James%20Blake%20-%20Our%20Love%20Comes%20Back.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":1,"title":"Overgrown","genre_id":"1","artist_id":"4","duration":"300.514","tracknum":"1","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/01%20James%20Blake%20-%20Overgrown.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":5,"title":"Retrograde","genre_id":"1","artist_id":"4","duration":"223.596","tracknum":"5","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/05%20James%20Blake%20-%20Retrograde.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":4,"title":"Take a Fall For Me (feat. RZA)","genre_id":"1","artist_id":"4","duration":"213.954","tracknum":"4","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/04%20James%20Blake%20-%20Take%20a%20Fall%20For%20Me%20(feat.%20RZA).mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":9,"title":"To the Last","genre_id":"1","artist_id":"4","duration":"259.686","tracknum":"9","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/09%20James%20Blake%20-%20To%20the%20Last.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"},{"id":8,"title":"Voyeur","genre_id":"1","artist_id":"4","duration":"257.748","tracknum":"8","year":"2013","artwork_track_id":"7d10afd0","url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/08%20James%20Blake%20-%20Voyeur.mp3","artist":"James Blake","album":"Overgrown (Deluxe Edition)","album_id":"1","type":"mp3","coverart":"1","remote":"0","genre":"Dance"}]}}				
+				
+				JSONObject songResult = result.getJSONObject("result");
+				JSONArray songList = songResult.getJSONArray("titles_loop");
+/*
+				"id":7,
+				"title":"Digital Lion",
+				"genre_id":"1",
+				"artist_id":"4",
+				"duration":"287.016",
+				"tracknum":"7",
+				"year":"2013",
+				"artwork_track_id":"7d10afd0",
+				"url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/07%20James%20Blake%20-%20Digital%20Lion.mp3",
+				"artist":"James Blake",
+				"album":"Overgrown (Deluxe Edition)",
+				"album_id":"1",
+				"type":"mp3",
+				"coverart":"1",
+				"remote":"0",
+				"genre":"Dance"				
+*/				
+				
+				
+				
+				
 			}
 
 			System.out.println(result.toString(2));
@@ -220,6 +247,9 @@ public class MainActivity extends Activity {
 				 String message = "You clicked position " + position + " which is album "
 						 + pickedAlbum.m_strAlbumName;
 				 Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+				 
+				String strSongListMessage = MainActivity.SendSongListMessage(0, 100000, pickedAlbum);
+				new MyAsyncTask().execute(strSongListMessage, strURL);				
 			 }
 		 });	 
 	}
@@ -233,7 +263,40 @@ public class MainActivity extends Activity {
 	 //Request album details
 	 //{"id":1,"method":"slim.request","params":[null,["songs","0","100000","tags:psdtyJualekojwxNpg","album_id:1"]]}	 
 	 
+	 // Request songs from album 
+	 //{"id":1,"method":"slim.request","params":[null,["songs","0","100000","tags:psdtyJualekojwxNpg","album_id:1"]]}
 
+	 public static String SendSongListMessage(int iStart, int iItemsPerResponse, CAlbum album)
+	 {
+		 // Request songs from album 
+		 //{"id":1,"method":"slim.request","params":[null,["songs","0","100000","tags:psdtyJualekojwxNpg","album_id:1"]]}
+		 
+		 JSONObject object = new JSONObject();
+		 
+		 String paramStr = String.format("[null,[\"songs\",%d,%d,\"tags:psdtyJualekojwxNpg\",\"album_id:%d\"]]", iStart, iItemsPerResponse, album.m_iId);
+		 
+		 try {
+			 object.put("id", 1);
+			 object.put("method", "slim.request");
+			 object.put("params", paramStr);
+		 } catch(JSONException e) {
+			 e.printStackTrace();
+		 }
+
+		 System.out.println(object);
+		
+		 String strJsonMessage = object.toString();
+		 String strJsonMessageResult = strJsonMessage.replace("\\","");
+		 strJsonMessage = strJsonMessageResult;
+		 strJsonMessageResult = strJsonMessage.replace("\"[","[");
+		 strJsonMessage = strJsonMessageResult;
+		 strJsonMessageResult = strJsonMessage.replace("]\"","]");		 
+		 
+		 Log.w("STU", strJsonMessageResult); 
+		 
+		 return strJsonMessageResult;		 
+	 }
+	 
 	 private String SendAlbumDetailListMessage(int iStart, int iItemsPerResponse)
 	 {
 		 //Request Albums
