@@ -6,6 +6,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
@@ -136,10 +137,9 @@ public class MainActivity extends Activity
 				
 				    CAlbum newAlbum = new CAlbum(iAlbumId, iAlbumYear, strAlbum, strArtist, strArtworkId);
 				    m_albumList.add(newAlbum);
-				    
-				    RedrawAlbumList();
-				    RegisterClickCallback();
 				}
+			    RedrawAlbumList();
+			    RegisterClickCallback();				
 			}
 			else
 			if (params.contains("songs"))
@@ -148,28 +148,53 @@ public class MainActivity extends Activity
 				
 				JSONObject songResult = result.getJSONObject("result");
 				JSONArray songList = songResult.getJSONArray("titles_loop");
-/*
-				"id":7,
-				"title":"Digital Lion",
-				"genre_id":"1",
-				"artist_id":"4",
-				"duration":"287.016",
-				"tracknum":"7",
-				"year":"2013",
-				"artwork_track_id":"7d10afd0",
-				"url":"file:///E:/Music/James%20Blake%20-%20Overgrown%20(Deluxe%20Edition)%202013/07%20James%20Blake%20-%20Digital%20Lion.mp3",
-				"artist":"James Blake",
-				"album":"Overgrown (Deluxe Edition)",
-				"album_id":"1",
-				"type":"mp3",
-				"coverart":"1",
-				"remote":"0",
-				"genre":"Dance"				
-*/				
 				
+				m_songList.clear();
 				
+				for (int i = 0; i < songList.length(); i++) 
+				{
+				    JSONObject row = songList.getJSONObject(i);
+				    
+					int iId = row.getInt("id");
+					String strSongTitle = row.getString("title");
+					int iGenreId = row.getInt("genre_id");
+					int iArtistId = row.getInt("artist_id");
+					double dDuration = row.getDouble("duration");
+					int iTrackNum = row.getInt("tracknum");
+					int iYear = row.getInt("year");
+					String urlLocation = row.getString("url");
+					String strArtist = row.getString("artist");
+					String strAlbum = row.getString("album");
+					int iAlbumId = row.getInt("album_id");
+					String strType = row.getString("type");
+					int iCoverartId = row.getInt("coverart");
+					int iRemote = row.getInt("remote");
+					String strGenre = row.getString("genre");
+					
+				    String strArtworkId = null;
+				    try
+				    {
+				    	strArtworkId = row.getString("artwork_track_id");
+				    }
+				    catch (Exception e)
+				    {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+				    }
 				
+				    CSong newSong = new CSong(iId, strSongTitle, iGenreId, iArtistId, dDuration, iTrackNum, iYear, strArtworkId, urlLocation, strArtist, strAlbum, iAlbumId, strType, iCoverartId, iRemote, strGenre);
+				    
+				    m_songList.add(newSong);
+				}
 				
+			    Collections.sort(m_songList);
+			    
+			    //RedrawAlbumList();
+			    //RegisterClickCallback();
+			    
+			    // TO DO 
+			    // Draw the track list and register callback
+			    
 			}
 
 			System.out.println(result.toString(2));
