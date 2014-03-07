@@ -211,7 +211,9 @@ public class MainActivity extends Activity
 		 list.setVisibility(View.VISIBLE);
 		 list.setAdapter(adapter);
 	 }
-	 
+
+	
+	
 	 private class CMyListAdapter extends ArrayAdapter<CAlbum>
 	 {
 	    public ImageLoader imageLoader;
