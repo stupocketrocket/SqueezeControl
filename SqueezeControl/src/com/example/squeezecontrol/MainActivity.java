@@ -47,11 +47,13 @@ public class MainActivity extends Activity
 	public static int iPortNumber = 9001;
 	private static String strURL = null;
 	private String strURLFormat = new String("http://%s:%d/jsonrpc.js");
+	private String strURLMP3StreamFormat = new String("http://%s:%d/stream.mp3");	
 	private EditText editHostName;
 	private EditText editPortNumber;
 	
 	private List<CAlbum> m_albumList = new ArrayList<CAlbum>();
-	private List<CSong> m_songList = new ArrayList<CSong>();	
+	private List<CSong> m_songList = new ArrayList<CSong>();
+	private List<String> m_playeridList = new ArrayList<String>();
 	private MediaPlayer m_mediaPlayer;
 	
 	@Override
@@ -85,8 +87,10 @@ public class MainActivity extends Activity
 		
 		strURL = String.format(strURLFormat, strHostName, iPortNumber);
 		
+		String strURLMP3Stream = String.format(strURLMP3StreamFormat, strHostName, iPortNumber);
+		
 		m_mediaPlayer = new MediaPlayer();
-		m_mediaPlayer.setDataSource("http://10.0.2.2:9001/stream.mp3");
+		m_mediaPlayer.setDataSource(strURLMP3Stream);
 		m_mediaPlayer.prepare();
 		if (!m_mediaPlayer.isPlaying())
 		{
@@ -112,9 +116,22 @@ public class MainActivity extends Activity
 				int iMaxAlbums = 0;
 				iMaxAlbums = Integer.parseInt(strNumAlbums);
 				
-				String strAlbumDetailListMessage = SendAlbumDetailListMessage(0, iMaxAlbums);
-				new MyAsyncTask().execute(strAlbumDetailListMessage, strURL);	
+				// Get the list of players
+				JSONArray playerList = serverResult.getJSONArray("players_loop");				
+		
+				m_playeridList.clear();
 				
+				for (int i = 0; i < playerList.length(); i++) 
+				{
+				    JSONObject row = playerList.getJSONObject(i);
+				    String strPlayerId = row.getString("playerid");
+				    m_playeridList.add(strPlayerId);
+				}
+				
+				String strAlbumDetailListMessage = SendAlbumDetailListMessage(0, iMaxAlbums);
+				new MyAsyncTask().execute(strAlbumDetailListMessage, strURL);
+				
+				//{"info total songs":22,"other player count":0,"lastscan":"1392642768","info total artists":2,"info total genres":2,"sn player count":0,"players_loop":[{"model":"http","seq_no":0,"name":"stagefright from 127.0.0.1","connected":1,"power":1,"canpoweroff":0,"playerid":"127.0.0.1","uuid":null,"isplayer":0,"ip":"127.0.0.1:61141"}],"player count":1,"info total albums":2,"uuid":"06592e63-6816-4243-8008-fc8852bf94b0","version":"7.7.3"}				
 			}
 			else
 			if (params.contains("albums"))
@@ -199,8 +216,7 @@ public class MainActivity extends Activity
 			    Collections.sort(m_songList);
 			    
 			    RedrawTrackList();
-			    //RedrawAlbumList();
-			    //RegisterClickCallback();
+			    RegisterTrackClickCallback();
 			    
 			    // TO DO 
 			    // Draw the track list and register callback
@@ -213,6 +229,63 @@ public class MainActivity extends Activity
 			e.printStackTrace();
 		} 
 	 }
+	 
+	 
+	 
+	 private void RegisterTrackClickCallback() 
+	 {
+		// TODO Auto-generated method stub
+		 ListView list = (ListView) findViewById(R.id.albumsListView);
+		 list.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+			 @Override
+			 public void onItemClick(AdapterView<?> parent, View viewClicked, int position, long id)
+			 {
+				 CSong pickedSong = m_songList.get(position);
+				 String message = "You clicked position " + position + " which is song "
+						 + pickedSong.m_strSongTitle;
+				 Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG).show();
+				 
+				 for (int i = 0; i < m_playeridList.size(); i++) 
+				 {
+					 String strPlayerId = m_playeridList.get(i);
+
+					String strTrackPlayMessage = MainActivity.SendTrackPlayMessage(strPlayerId, 0, 100000, pickedSong);
+					new MyAsyncTask().execute(strTrackPlayMessage, strURL);					 
+				 }
+			 }
+		 });	 
+	}
+	 
+	
+	 public static String SendTrackPlayMessage(String strPlayerId, int iStart, int iItemsPerResponse, CSong song)
+	 {
+		 // Send play message with track to play
+		 JSONObject object = new JSONObject();
+		 
+		 String paramStr = String.format("[\"%s\",[\"playlist\",\"play\",\"%s\"]]", strPlayerId, song.m_urlLocation);
+		 
+		 try {
+			 object.put("id", 1);
+			 object.put("method", "slim.request");
+			 object.put("params", paramStr);
+		 } catch(JSONException e) {
+			 e.printStackTrace();
+		 }
+
+		 System.out.println(object);
+		
+		 String strJsonMessage = object.toString();
+		 String strJsonMessageResult = strJsonMessage.replace("\\","");
+		 strJsonMessage = strJsonMessageResult;
+		 strJsonMessageResult = strJsonMessage.replace("\"[","[");
+		 strJsonMessage = strJsonMessageResult;
+		 strJsonMessageResult = strJsonMessage.replace("]\"","]");		 
+		 
+		 Log.w("STU", strJsonMessageResult); 
+		 
+		 return strJsonMessageResult;		 	 
+	 }
+	 	 
 	 
 	 private void RedrawTrackList()
 	 {
