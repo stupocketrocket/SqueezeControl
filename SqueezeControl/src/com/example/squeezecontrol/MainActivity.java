@@ -90,13 +90,13 @@ public class MainActivity extends Activity
 		String strURLMP3Stream = String.format(strURLMP3StreamFormat, strHostName, iPortNumber);
 		
 		m_mediaPlayer = new MediaPlayer();
-		m_mediaPlayer.setDataSource(strURLMP3Stream);
-		m_mediaPlayer.prepare();
-		if (!m_mediaPlayer.isPlaying())
-		{
-			m_mediaPlayer.start();
-			m_mediaPlayer.setVolume(1.0f, 1.0f);
-		}
+		//m_mediaPlayer.setDataSource(strURLMP3Stream);
+		//m_mediaPlayer.prepare();
+		//if (!m_mediaPlayer.isPlaying())
+		//{
+		//	m_mediaPlayer.start();
+		//	m_mediaPlayer.setVolume(1.0f, 1.0f);
+		//}
 		String strServerStatusMessage = SendServerStatusMessage(0, 999);
 		new MyAsyncTask().execute(strServerStatusMessage, strURL);	
 	 }
@@ -221,6 +221,30 @@ public class MainActivity extends Activity
 			    // TO DO 
 			    // Draw the track list and register callback
 			    
+			}
+			else
+			if (params.contains("playlist") && params.contains("play"))
+			{
+				if (m_mediaPlayer.isPlaying())
+				{
+					m_mediaPlayer.stop();
+					//m_mediaPlayer.reset();
+				}
+				
+				try {
+					String strURLMP3Stream = String.format(strURLMP3StreamFormat, strHostName, iPortNumber);
+					m_mediaPlayer.setDataSource(strURLMP3Stream);					
+					m_mediaPlayer.prepare();
+				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				m_mediaPlayer.start();
+				m_mediaPlayer.setVolume(1.0f, 1.0f);
+				
 			}
 
 			System.out.println(result.toString(2));
