@@ -23,6 +23,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -51,7 +52,7 @@ public class MainActivity extends Activity
 	
 	private List<CAlbum> m_albumList = new ArrayList<CAlbum>();
 	private List<CSong> m_songList = new ArrayList<CSong>();	
-	
+	private MediaPlayer m_mediaPlayer;
 	
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,14 @@ public class MainActivity extends Activity
 		
 		strURL = String.format(strURLFormat, strHostName, iPortNumber);
 		
+		m_mediaPlayer = new MediaPlayer();
+		m_mediaPlayer.setDataSource("http://10.0.2.2:9001/stream.mp3");
+		m_mediaPlayer.prepare();
+		if (!m_mediaPlayer.isPlaying())
+		{
+			m_mediaPlayer.start();
+			m_mediaPlayer.setVolume(1.0f, 1.0f);
+		}
 		String strServerStatusMessage = SendServerStatusMessage(0, 999);
 		new MyAsyncTask().execute(strServerStatusMessage, strURL);	
 	 }
@@ -189,6 +198,7 @@ public class MainActivity extends Activity
 				
 			    Collections.sort(m_songList);
 			    
+			    RedrawTrackList();
 			    //RedrawAlbumList();
 			    //RegisterClickCallback();
 			    
@@ -202,6 +212,14 @@ public class MainActivity extends Activity
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} 
+	 }
+	 
+	 private void RedrawTrackList()
+	 {
+		 ArrayAdapter<CSong> adapter = new CTrackListAdapter(this, m_songList);
+		 ListView list = (ListView) findViewById(R.id.albumsListView);
+		 list.setVisibility(View.VISIBLE);
+		 list.setAdapter(adapter);
 	 }
 	 
 	private void RedrawAlbumList()

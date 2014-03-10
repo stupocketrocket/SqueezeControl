@@ -2,6 +2,8 @@ package com.example.squeezecontrol;
 
 import java.util.List;
 
+import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -17,6 +19,7 @@ public class CTrackListAdapter extends ArrayAdapter<CSong>
 	public ImageLoader imageLoader;
 	private MainActivity m_mainActivity;
 	private List<CSong> m_songList;
+	private static LayoutInflater m_inflater=null;	
    
 	public CTrackListAdapter(MainActivity activity, List<CSong> songList)	
 	{
@@ -24,47 +27,49 @@ public class CTrackListAdapter extends ArrayAdapter<CSong>
 		m_mainActivity = activity;
 		m_songList = songList;
 		
-       imageLoader=new ImageLoader(activity);
+		m_inflater = (LayoutInflater)activity.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+		
+		imageLoader=new ImageLoader(activity);
 	}
 	
-/*
+
 	@Override
-	public View getView(int position, View convertView, ViewGroup parent) {
+	public View getView(int position, View convertView, ViewGroup parent) 
+	{
 		// TODO Auto-generated method stub
 		// Make sure we
 		View itemView = convertView;
 		if (itemView == null)
 		{
-			itemView = getLayoutInflater().inflate(R.layout.item_view, parent, false);
+			itemView = m_inflater.inflate(R.layout.track_view, parent, false);
 		}
 		
 		// Find the album to work with
 		
-		CAlbum currentAlbum = m_albumList.get(position);
+		CSong currentSong = m_songList.get(position);
 		
 		// Fill the view
 
-		ImageView imageView = (ImageView) itemView.findViewById(R.id.item_icon);
+		ImageView imageView = (ImageView) itemView.findViewById(R.id.item_trackicon);
 		
-	    imageLoader.DisplayImage(currentAlbum.m_strArtworkUrlSmall, imageView);
+	    imageLoader.DisplayImage(currentSong.m_strArtworkUrlSmall, imageView);
 		//imageView.setImageResource(currentAlbum.m_iId);
 		//imageView.setImageResource(R.drawable.ic_android);			
 		
 		// Album
-		TextView albumText = (TextView) itemView.findViewById(R.id.item_textAlbumName);
-		albumText.setText(currentAlbum.m_strAlbumName);
+		TextView albumText = (TextView) itemView.findViewById(R.id.text_trackName);
+		albumText.setText(currentSong.m_strSongTitle);
 
 		// Artist
-		TextView artistText = (TextView) itemView.findViewById(R.id.item_textArtist);
-		artistText.setText(currentAlbum.m_strArtist);
+		TextView artistText = (TextView) itemView.findViewById(R.id.text_artist);
+		artistText.setText(currentSong.m_strArtist);
 		
 		// Year
-		TextView yearText = (TextView) itemView.findViewById(R.id.item_textYear);
-		yearText.setText(Integer.toString(currentAlbum.m_iYear));
+		TextView yearText = (TextView) itemView.findViewById(R.id.text_time);
+		yearText.setText(Integer.toString((int)currentSong.m_dDuration));
 		
 		return itemView;
 	}
-*/	
 }	
 
 

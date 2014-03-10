@@ -4,7 +4,7 @@
     android:layout_height="match_parent" >
 
     <ImageView
-        android:id="@+id/imageView1"
+        android:id="@+id/item_trackicon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
@@ -19,7 +19,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_marginLeft="22dp"
-        android:layout_toRightOf="@+id/imageView1"
+        android:layout_toRightOf="@+id/item_trackicon"
         android:text="Track Name"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 

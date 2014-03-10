@@ -31,11 +31,11 @@ public final class R {
         public static final int button1=0x7f080006;
         public static final int editHostName=0x7f080003;
         public static final int editPortNumber=0x7f080005;
-        public static final int imageView1=0x7f08000c;
         public static final int item_icon=0x7f080008;
         public static final int item_textAlbumName=0x7f080009;
         public static final int item_textArtist=0x7f08000a;
         public static final int item_textYear=0x7f08000b;
+        public static final int item_trackicon=0x7f08000c;
         public static final int linearLayout1=0x7f080001;
         public static final int progressBar1=0x7f080000;
         public static final int textAlbumName=0x7f080002;
