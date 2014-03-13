@@ -1,0 +1,32 @@
+<PreferenceScreen
+        xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <PreferenceCategory
+            android:title="@string/server_settings" >
+
+        <EditTextPreference
+                android:key="edittext_serverAddress"
+                android:title="@string/title_edittext_serverAddress"
+                android:summary="@string/summary_edittext_serverAddress"
+                android:dialogTitle="@string/dialog_title_edittext_serverAddress" />
+
+         <EditTextPreference
+                android:key="edittext_serverPort"
+                android:title="@string/title_edittext_serverPort"
+                android:summary="@string/summary_edittext_serverPort"
+                android:dialogTitle="@string/dialog_title_edittext_serverPort" />
+        
+    </PreferenceCategory>
+
+    <PreferenceCategory
+            android:title="PreferenceCategory B">
+
+        <EditTextPreference
+                android:key="edittext_serverPort"
+                android:title="title_edittext_serverPort"
+                android:summary="summary_edittext_serverPort"
+                android:dialogTitle="dialog_title_edittext_serverPort" />
+
+    </PreferenceCategory>
+
+</PreferenceScreen>

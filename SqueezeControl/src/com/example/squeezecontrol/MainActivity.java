@@ -22,12 +22,17 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+
 import android.app.Activity;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.media.MediaPlayer;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -41,6 +46,8 @@ import android.widget.Toast;
 
 public class MainActivity extends Activity 
 {
+
+
 	private static final String URL = "http://10.0.2.2:9001/jsonrpc.js";	
 	private ProgressBar progressBar;
 	public static String strHostName = "10.0.2.2";
@@ -76,6 +83,21 @@ public class MainActivity extends Activity
 		return true;
 	}
 	
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) 
+	{
+	       if (item.getItemId() == R.id.action_settings)
+	       {
+	           Intent intent = new Intent()
+	           		.setClass(this,
+	                CSettingsPreferenceActivity.class);
+	           this.startActivityForResult(intent, 0);
+	       }
+	       return true;
+	}
+
+	
+	
 	 public void SelectPlaylist(View view) throws IOException 
 	 {
 		progressBar.setVisibility(View.VISIBLE);
@@ -100,6 +122,28 @@ public class MainActivity extends Activity
 		String strServerStatusMessage = SendServerStatusMessage(0, 999);
 		new MyAsyncTask().execute(strServerStatusMessage, strURL);	
 	 }
+	 
+	 @Override
+	 protected void onActivityResult(int requestCode, int resultCode, Intent data) 
+	 {
+		// TODO Auto-generated method stub
+		//super.onActivityResult(requestCode, resultCode, data);
+		 loadPreferences();
+	 }
+
+	 private void loadPreferences()
+	 {
+		  SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		  
+		  //boolean my_checkbox_preference = mySharedPreferences.getBoolean("checkbox_preference", false);
+		  //prefCheckBox.setChecked(my_checkbox_preference);
+
+		  String my_edittext_serverAddress = mySharedPreferences.getString("edittext_serverAddress", "");
+		  	editHostName.setText(my_edittext_serverAddress);
+		     
+		  String my_edittext_serverPort = mySharedPreferences.getString("edittext_serverPort", "");
+		  	editPortNumber.setText(my_edittext_serverPort);
+	 }	 
 	 
 	 private void ProcessJSONResponse(JSONObject result)
 	 {
