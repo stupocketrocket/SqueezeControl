@@ -1,5 +1,6 @@
 <PreferenceScreen
-        xmlns:android="http://schemas.android.com/apk/res/android">
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        >
 
     <PreferenceCategory
             android:title="@string/server_settings" >
@@ -8,13 +9,18 @@
                 android:key="edittext_serverAddress"
                 android:title="@string/title_edittext_serverAddress"
                 android:summary="@string/summary_edittext_serverAddress"
-                android:dialogTitle="@string/dialog_title_edittext_serverAddress" />
+                android:dialogTitle="@string/dialog_title_edittext_serverAddress"
+                android:defaultValue="10.0.2.2"
+                />
+        		
 
          <EditTextPreference
                 android:key="edittext_serverPort"
                 android:title="@string/title_edittext_serverPort"
                 android:summary="@string/summary_edittext_serverPort"
-                android:dialogTitle="@string/dialog_title_edittext_serverPort" />
+                android:dialogTitle="@string/dialog_title_edittext_serverPort"
+                android:defaultValue="9001" 
+                />
         
     </PreferenceCategory>
 

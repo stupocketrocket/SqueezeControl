@@ -4,7 +4,7 @@
     <string name="app_name">SqueezeControl</string>
     <string name="action_settings">Settings</string>
     <string name="hello_world">Hello world!</string>
-    <string name="ButtonName">Select Playlist</string>
+    <string name="ButtonName">Get Albums</string>
     <string name="title_activity_main">Preferences</string>
     <string name="server_settings">SqueezeBox Server Settings</string>
     <string name="title_edittext_serverAddress">Server Address</string>

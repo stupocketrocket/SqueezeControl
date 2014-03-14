@@ -49,9 +49,9 @@ public class MainActivity extends Activity
 
 
 	private static final String URL = "http://10.0.2.2:9001/jsonrpc.js";	
-	private ProgressBar progressBar;
-	public static String strHostName = "10.0.2.2";
-	public static int iPortNumber = 9001;
+	public static ProgressBar progressBar;
+	public static String m_strHostName = "10.0.2.2";
+	public static int m_iPortNumber = 9001;
 	private static String strURL = null;
 	private String strURLFormat = new String("http://%s:%d/jsonrpc.js");
 	private String strURLMP3StreamFormat = new String("http://%s:%d/stream.mp3");	
@@ -69,11 +69,6 @@ public class MainActivity extends Activity
 		setContentView(R.layout.activity_main);
 		progressBar = (ProgressBar)findViewById(R.id.progressBar1);
 		progressBar.setVisibility(View.GONE);
-		
-		editHostName = (EditText)findViewById(R.id.editHostName);
-		editHostName.setText(strHostName, TextView.BufferType.EDITABLE);
-		editPortNumber = (EditText)findViewById(R.id.editPortNumber);
-		editPortNumber.setText(Integer.toString(iPortNumber) , TextView.BufferType.EDITABLE);
 	}
 
 	@Override
@@ -100,16 +95,12 @@ public class MainActivity extends Activity
 	
 	 public void SelectPlaylist(View view) throws IOException 
 	 {
-		progressBar.setVisibility(View.VISIBLE);
 		ListView list = (ListView) findViewById(R.id.albumsListView);
 		list.setVisibility(View.INVISIBLE);
 		
-		strHostName = editHostName.getText().toString();
-		iPortNumber = Integer.parseInt(editPortNumber.getText().toString());
+		loadPreferences();
 		
-		strURL = String.format(strURLFormat, strHostName, iPortNumber);
-		
-		String strURLMP3Stream = String.format(strURLMP3StreamFormat, strHostName, iPortNumber);
+		String strURLMP3Stream = String.format(strURLMP3StreamFormat, m_strHostName, m_iPortNumber);
 		
 		m_mediaPlayer = new MediaPlayer();
 		//m_mediaPlayer.setDataSource(strURLMP3Stream);
@@ -133,16 +124,24 @@ public class MainActivity extends Activity
 
 	 private void loadPreferences()
 	 {
-		  SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
+		  	SharedPreferences mySharedPreferences = PreferenceManager.getDefaultSharedPreferences(this);
 		  
 		  //boolean my_checkbox_preference = mySharedPreferences.getBoolean("checkbox_preference", false);
 		  //prefCheckBox.setChecked(my_checkbox_preference);
 
-		  String my_edittext_serverAddress = mySharedPreferences.getString("edittext_serverAddress", "");
-		  	editHostName.setText(my_edittext_serverAddress);
+		  	String my_edittext_serverAddress = mySharedPreferences.getString("edittext_serverAddress", "");
 		     
-		  String my_edittext_serverPort = mySharedPreferences.getString("edittext_serverPort", "");
-		  	editPortNumber.setText(my_edittext_serverPort);
+		  	String my_edittext_serverPort = mySharedPreferences.getString("edittext_serverPort", "");
+
+	  		String strHostName = my_edittext_serverAddress;		  	
+		  	if (strHostName == "")
+		  		strHostName = m_strHostName;
+ 
+		  	int iPortNumber = m_iPortNumber; 
+		  	if (my_edittext_serverPort != "")
+		  		iPortNumber = Integer.parseInt(my_edittext_serverPort);
+			
+			strURL = String.format(strURLFormat, strHostName, iPortNumber);
 	 }	 
 	 
 	 private void ProcessJSONResponse(JSONObject result)
@@ -276,7 +275,7 @@ public class MainActivity extends Activity
 				}
 				
 				try {
-					String strURLMP3Stream = String.format(strURLMP3StreamFormat, strHostName, iPortNumber);
+					String strURLMP3Stream = String.format(strURLMP3StreamFormat, m_strHostName, m_iPortNumber);
 					m_mediaPlayer.setDataSource(strURLMP3Stream);					
 					m_mediaPlayer.prepare();
 				} catch (IllegalStateException e) {
@@ -290,7 +289,7 @@ public class MainActivity extends Activity
 				m_mediaPlayer.setVolume(1.0f, 1.0f);
 				
 			}
-
+			progressBar.setVisibility(View.GONE);
 			System.out.println(result.toString(2));
 		} catch (JSONException e) {
 			// TODO Auto-generated catch block
@@ -327,6 +326,7 @@ public class MainActivity extends Activity
 	
 	 public static String SendTrackPlayMessage(String strPlayerId, int iStart, int iItemsPerResponse, CSong song)
 	 {
+		 MainActivity.progressBar.setVisibility(View.VISIBLE);
 		 // Send play message with track to play
 		 JSONObject object = new JSONObject();
 		 
@@ -456,7 +456,7 @@ public class MainActivity extends Activity
 	 {
 		 // Request songs from album 
 		 //{"id":1,"method":"slim.request","params":[null,["songs","0","100000","tags:psdtyJualekojwxNpg","album_id:1"]]}
-		 
+		 MainActivity.progressBar.setVisibility(View.VISIBLE);
 		 JSONObject object = new JSONObject();
 		 
 		 String paramStr = String.format("[null,[\"songs\",%d,%d,\"tags:psdtyJualekojwxNpg\",\"album_id:%d\"]]", iStart, iItemsPerResponse, album.m_iId);
@@ -487,7 +487,7 @@ public class MainActivity extends Activity
 	 {
 		 //Request Albums
 		 //{"id":1,"method":"slim.request","params":[null,["albums","0","2","tags:ljya"]]}
-		 
+		 MainActivity.progressBar.setVisibility(View.VISIBLE);
 		 JSONObject object = new JSONObject();
 		 
 		 String paramStr = String.format("[null,[\"albums\",%d,%d,\"tags:ljya\"]]", iStart, iItemsPerResponse);
@@ -516,6 +516,7 @@ public class MainActivity extends Activity
 	 
 	 private String SendServerStatusMessage(int iStart, int iItemsPerResponse)
 	 {
+		 MainActivity.progressBar.setVisibility(View.VISIBLE);
 		 JSONObject object = new JSONObject();
 		 
 		 // {"id":1,"method":"slim.request","params":["",["serverstatus",0,999]]}

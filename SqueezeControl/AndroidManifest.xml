@@ -25,7 +25,8 @@
         </activity>
            <activity
             android:name="com.example.squeezecontrol.CSettingsPreferenceActivity"
-            android:label="@string/title_activity_main" >
+            android:label="@string/title_activity_main" 
+            android:theme="@style/PreferencesTheme">
         </activity>
     </application>
 
