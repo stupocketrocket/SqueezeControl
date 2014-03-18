@@ -91,6 +91,12 @@ public class MainActivity extends Activity
 	       return true;
 	}
 
+
+	 public void OnPlayPause(View view) throws IOException
+	 {
+		 
+		 
+	 }
 	
 	
 	 public void SelectPlaylist(View view) throws IOException 
