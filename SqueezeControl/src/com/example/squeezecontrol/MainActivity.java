@@ -55,6 +55,8 @@ public class MainActivity extends Activity {
 	private String strURLMP3StreamFormat = new String("http://%s:%d/stream.mp3");
 	private EditText editHostName;
 	private EditText editPortNumber;
+	private int m_iMaxRequests;
+	private boolean m_bUseMaxRequests = false;
 
 	private List<CAlbum> m_albumList = new ArrayList<CAlbum>();
 	private List<CSong> m_songList = new ArrayList<CSong>();
@@ -133,6 +135,13 @@ public class MainActivity extends Activity {
 		String my_edittext_serverPort = mySharedPreferences.getString(
 				"edittext_serverPort", "");
 
+		boolean my_checkbox_maxRequests = mySharedPreferences.getBoolean(
+				"checkbox_enableMaxRequestItems", false);
+
+		String my_edittext_maxRequests = mySharedPreferences.getString(
+				"edittext_maxRequestItems", "");
+		
+		
 		String strHostName = my_edittext_serverAddress;
 		if (strHostName == "")
 			strHostName = m_strHostName;
@@ -142,6 +151,14 @@ public class MainActivity extends Activity {
 			iPortNumber = Integer.parseInt(my_edittext_serverPort);
 
 		strURL = String.format(strURLFormat, strHostName, iPortNumber);
+		
+		m_bUseMaxRequests = false;
+		
+		if (my_checkbox_maxRequests)
+		{
+			m_bUseMaxRequests = true;
+			m_iMaxRequests = Integer.parseInt(my_edittext_maxRequests);
+		}
 	}
 
 	private void ProcessJSONResponse(JSONObject result) {
@@ -170,6 +187,11 @@ public class MainActivity extends Activity {
 					m_playeridList.add(strPlayerId);
 				}
 
+				if (m_bUseMaxRequests)
+				{
+					iMaxAlbums = m_iMaxRequests;
+				}
+				
 				String strAlbumDetailListMessage = SendAlbumDetailListMessage(
 						0, iMaxAlbums);
 				new MyAsyncTask().execute(strAlbumDetailListMessage, strURL);

@@ -13,5 +13,9 @@
     <string name="title_edittext_serverPort">Server port</string>
     <string name="dialog_title_edittext_serverPort">Server port</string>
     <string name="summary_edittext_serverPort">Port number of SqueezeBox server </string>
-
+	<string name="title_edittext_maxRequestItems">Maximum items</string>
+	<string name="summary_edittext_maxRequestItems">Maximum items to request from server</string>    
+	<string name="dialog_title_edittext_maxRequestItems">Maximum items</string>    
+	<string name="title_checkbox_enableMaxRequestItems">Enable maximum items</string>
+	<string name="summary_checkbox_enableMaxRequestItems">Enable maximum items to request from server</string>	
 </resources>

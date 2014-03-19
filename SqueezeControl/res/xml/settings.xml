@@ -21,7 +21,23 @@
                 android:dialogTitle="@string/dialog_title_edittext_serverPort"
                 android:defaultValue="9001" 
                 />
-        
+         
+         <CheckBoxPreference
+             			android:key="checkbox_enableMaxRequestItems"
+                		android:title="@string/title_checkbox_enableMaxRequestItems"
+                		android:summary="@string/summary_checkbox_enableMaxRequestItems"
+                        android:defaultValue="false"
+                        />
+         
+         <EditTextPreference
+                android:key="edittext_maxRequestItems"
+                android:title="@string/title_edittext_maxRequestItems"
+                android:summary="@string/summary_edittext_maxRequestItems"
+                android:dialogTitle="@string/dialog_title_edittext_maxRequestItems"
+                android:defaultValue="10"
+                android:dependency="checkbox_enableMaxRequestItems" 
+                />
+                 
     </PreferenceCategory>
 
     <PreferenceCategory
