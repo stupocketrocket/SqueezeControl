@@ -31,7 +31,7 @@ public final class R {
         public static final int action_settings=0x7f09000e;
         public static final int albumsListView=0x7f090003;
         public static final int button1=0x7f090002;
-        public static final int imageButton1=0x7f090004;
+        public static final int buttonPlayPause=0x7f090004;
         public static final int item_icon=0x7f090006;
         public static final int item_textAlbumName=0x7f090007;
         public static final int item_textArtist=0x7f090008;

@@ -26,25 +26,35 @@ import android.app.Activity;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
+import android.media.MediaPlayer.OnBufferingUpdateListener;
+import android.media.MediaPlayer.OnCompletionListener;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
+import android.widget.SeekBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements OnBufferingUpdateListener, OnCompletionListener 
+{
+
 
 	private static final String URL = "http://10.0.2.2:9001/jsonrpc.js";
 	public static ProgressBar progressBar;
@@ -63,6 +73,10 @@ public class MainActivity extends Activity {
 	private List<String> m_playeridList = new ArrayList<String>();
 	private MediaPlayer m_mediaPlayer;
 	public static ProgressDialog m_progressDialog;
+	private SeekBar m_seekBar;
+	private int mediaFileLengthInMilliseconds = 1000 * 60 * 3; 
+	private ImageButton m_buttonPlayPause;
+	private final Handler handler = new Handler();	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -70,8 +84,28 @@ public class MainActivity extends Activity {
 		setContentView(R.layout.activity_main);
 		progressBar = (ProgressBar) findViewById(R.id.progressBar1);
 		progressBar.setVisibility(View.GONE);
-	}
+		m_seekBar = (SeekBar) findViewById(R.id.seekBar1);
+		m_seekBar.setMax(99); // It means 100% .0-99
+		m_buttonPlayPause = (ImageButton) findViewById(R.id.buttonPlayPause);
+		
+		m_seekBar.setOnTouchListener( new OnTouchListener() 
+		{
+            @Override
+            public boolean onTouch(View v, MotionEvent event) 
+            {
+                // TODO Auto-generated method stub
 
+            	if(m_mediaPlayer.isPlaying())
+            	{
+            		SeekBar sb = (SeekBar)v;
+            		int playPositionInMillisecconds = (mediaFileLengthInMilliseconds / 100) * sb.getProgress();
+            		m_mediaPlayer.seekTo(playPositionInMillisecconds);            	
+            	}
+                return true;
+            }
+		});
+	}
+			
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
@@ -89,10 +123,44 @@ public class MainActivity extends Activity {
 		return true;
 	}
 
-	public void OnPlayPause(View view) throws IOException {
+	
+	 public void onBufferingUpdate(MediaPlayer arg0, int percent) 
+	 {
+		 m_seekBar.setSecondaryProgress(percent);
+	 }
 
+	 public void onCompletion(MediaPlayer arg0) 
+	 {
+		 m_buttonPlayPause.setImageResource(R.drawable.ic_play);	 
+	 }	
+
+	
+	public void OnPlayPause(View view) throws IOException 
+	{
+		mediaFileLengthInMilliseconds = m_mediaPlayer.getDuration(); // gets the song length in milliseconds from URL
+		
+		if(!m_mediaPlayer.isPlaying()){
+			m_mediaPlayer.start();
+			m_buttonPlayPause.setImageResource(R.drawable.ic_pause);
+		}else {
+			m_mediaPlayer.pause();
+			m_buttonPlayPause.setImageResource(R.drawable.ic_play);
+		}
+		primarySeekBarProgressUpdater();
 	}
 
+	private void primarySeekBarProgressUpdater() {
+		m_seekBar.setProgress((int)(((float)m_mediaPlayer.getCurrentPosition()/mediaFileLengthInMilliseconds)*100)); // This math construction give a percentage of "was playing"/"song length"
+		if (m_mediaPlayer.isPlaying()) {
+			Runnable notification = new Runnable() {
+				public void run() {
+					primarySeekBarProgressUpdater();
+				}
+			};
+			handler.postDelayed(notification,1000);
+		}
+	}	
+		
 	public void SelectPlaylist(View view) throws IOException {
 		ListView list = (ListView) findViewById(R.id.albumsListView);
 		list.setVisibility(View.INVISIBLE);
@@ -102,7 +170,11 @@ public class MainActivity extends Activity {
 		String strURLMP3Stream = String.format(strURLMP3StreamFormat,
 				m_strHostName, m_iPortNumber);
 
+		
+		
 		m_mediaPlayer = new MediaPlayer();
+		m_mediaPlayer.setOnBufferingUpdateListener(this);
+		m_mediaPlayer.setOnCompletionListener(this);
 		// m_mediaPlayer.setDataSource(strURLMP3Stream);
 		// m_mediaPlayer.prepare();
 		// if (!m_mediaPlayer.isPlaying())
@@ -286,6 +358,7 @@ public class MainActivity extends Activity {
 					String strURLMP3Stream = String
 							.format(strURLMP3StreamFormat, m_strHostName,
 									m_iPortNumber);
+					m_mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					m_mediaPlayer.setDataSource(strURLMP3Stream);
 					m_mediaPlayer.prepare();
 				} catch (IllegalStateException e) {
@@ -297,7 +370,7 @@ public class MainActivity extends Activity {
 				}
 				m_mediaPlayer.start();
 				m_mediaPlayer.setVolume(1.0f, 1.0f);
-
+				primarySeekBarProgressUpdater();				
 			}
 			// progressBar.setVisibility(View.GONE);
 			m_progressDialog.cancel();
