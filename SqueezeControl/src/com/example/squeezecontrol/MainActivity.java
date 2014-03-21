@@ -30,6 +30,7 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.media.MediaPlayer.OnBufferingUpdateListener;
 import android.media.MediaPlayer.OnCompletionListener;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -150,14 +151,19 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 	}
 
 	private void primarySeekBarProgressUpdater() {
-		m_seekBar.setProgress((int)(((float)m_mediaPlayer.getCurrentPosition()/mediaFileLengthInMilliseconds)*100)); // This math construction give a percentage of "was playing"/"song length"
+		if (mediaFileLengthInMilliseconds == 0)
+			mediaFileLengthInMilliseconds = m_mediaPlayer.getDuration();
+		else
+		{
+			m_seekBar.setProgress((int)(((float)m_mediaPlayer.getCurrentPosition()/mediaFileLengthInMilliseconds)*100)); // This math construction give a percentage of "was playing"/"song length"
+		}
 		if (m_mediaPlayer.isPlaying()) {
 			Runnable notification = new Runnable() {
 				public void run() {
 					primarySeekBarProgressUpdater();
 				}
 			};
-			handler.postDelayed(notification,1000);
+			handler.postDelayed(notification,250);
 		}
 	}	
 		
@@ -349,10 +355,12 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 				// Draw the track list and register callback
 
 			} else if (params.contains("playlist") && params.contains("play")) {
-				if (m_mediaPlayer.isPlaying()) {
+//				if (m_mediaPlayer.isPlaying()) {
 					m_mediaPlayer.stop();
-					// m_mediaPlayer.reset();
-				}
+					m_mediaPlayer.reset();
+					//m_mediaPlayer.release();
+
+//				}
 
 				try {
 					String strURLMP3Stream = String
@@ -361,7 +369,14 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 					m_mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					m_mediaPlayer.setDataSource(strURLMP3Stream);
 					m_mediaPlayer.prepare();
+					//m_mediaPlayer.create(this, Uri.parse(strURLMP3Stream));					
 				} catch (IllegalStateException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (IllegalArgumentException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (SecurityException e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				} catch (IOException e) {
@@ -369,7 +384,15 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 					e.printStackTrace();
 				}
 				m_mediaPlayer.start();
+				//try {
+				//	Thread.sleep(1000);
+				//} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+				//	e.printStackTrace();
+				//}
+				mediaFileLengthInMilliseconds = m_mediaPlayer.getDuration();				
 				m_mediaPlayer.setVolume(1.0f, 1.0f);
+				m_seekBar.setProgress(0);
 				primarySeekBarProgressUpdater();				
 			}
 			// progressBar.setVisibility(View.GONE);

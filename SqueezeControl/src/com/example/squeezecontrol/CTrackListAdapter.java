@@ -64,9 +64,14 @@ public class CTrackListAdapter extends ArrayAdapter<CSong>
 		TextView artistText = (TextView) itemView.findViewById(R.id.text_artist);
 		artistText.setText(currentSong.m_strArtist);
 		
-		// Year
-		TextView yearText = (TextView) itemView.findViewById(R.id.text_time);
-		yearText.setText(Integer.toString((int)currentSong.m_dDuration));
+		// Time
+		TextView timeText = (TextView) itemView.findViewById(R.id.text_time);
+		
+		int iMinutes = ((int)currentSong.m_dDuration) / 60;
+		int iSeconds = ((int)currentSong.m_dDuration) % 60;
+		
+		String strTime = String.format("%d:%02d", iMinutes, iSeconds);
+		timeText.setText(strTime);
 		
 		return itemView;
 	}
