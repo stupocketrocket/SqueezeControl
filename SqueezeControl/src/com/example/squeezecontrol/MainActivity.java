@@ -61,6 +61,10 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 	public static ProgressBar progressBar;
 	public static String m_strHostName = "10.0.2.2";
 	public static int m_iPortNumber = 9001;
+	
+	public static String m_strUserHostName = "10.0.2.2";
+	public static int m_iUserPortNumber = 9001;
+	
 	private static String strURL = null;
 	private String strURLFormat = new String("http://%s:%d/jsonrpc.js");
 	private String strURLMP3StreamFormat = new String("http://%s:%d/stream.mp3");
@@ -174,7 +178,7 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 		loadPreferences();
 
 		String strURLMP3Stream = String.format(strURLMP3StreamFormat,
-				m_strHostName, m_iPortNumber);
+				m_strUserHostName, m_iUserPortNumber);
 
 		
 		
@@ -219,16 +223,14 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 		String my_edittext_maxRequests = mySharedPreferences.getString(
 				"edittext_maxRequestItems", "");
 		
-		
-		String strHostName = my_edittext_serverAddress;
-		if (strHostName == "")
-			strHostName = m_strHostName;
+		m_strUserHostName = my_edittext_serverAddress; 
+		if (m_strUserHostName == "")
+			m_strUserHostName = m_strHostName;
 
-		int iPortNumber = m_iPortNumber;
 		if (my_edittext_serverPort != "")
-			iPortNumber = Integer.parseInt(my_edittext_serverPort);
+			m_iUserPortNumber = Integer.parseInt(my_edittext_serverPort);
 
-		strURL = String.format(strURLFormat, strHostName, iPortNumber);
+		strURL = String.format(strURLFormat, m_strUserHostName, m_iUserPortNumber);
 		
 		m_bUseMaxRequests = false;
 		
@@ -364,8 +366,7 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 
 				try {
 					String strURLMP3Stream = String
-							.format(strURLMP3StreamFormat, m_strHostName,
-									m_iPortNumber);
+							.format(strURLMP3StreamFormat, m_strUserHostName, m_iUserPortNumber);
 					m_mediaPlayer.setAudioStreamType(AudioManager.STREAM_MUSIC);
 					m_mediaPlayer.setDataSource(strURLMP3Stream);
 					m_mediaPlayer.prepare();
