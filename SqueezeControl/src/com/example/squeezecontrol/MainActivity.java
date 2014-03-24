@@ -23,7 +23,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.ProgressDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.AudioManager;
@@ -77,7 +79,7 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 	private List<CSong> m_songList = new ArrayList<CSong>();
 	private List<String> m_playeridList = new ArrayList<String>();
 	private MediaPlayer m_mediaPlayer;
-	public static ProgressDialog m_progressDialog;
+	public static ProgressDialog m_progressDialog = null;
 	private SeekBar m_seekBar;
 	private int mediaFileLengthInMilliseconds = 1000 * 60 * 3; 
 	private ImageButton m_buttonPlayPause;
@@ -185,8 +187,8 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 		m_mediaPlayer = new MediaPlayer();
 		m_mediaPlayer.setOnBufferingUpdateListener(this);
 		m_mediaPlayer.setOnCompletionListener(this);
-		// m_mediaPlayer.setDataSource(strURLMP3Stream);
-		// m_mediaPlayer.prepare();
+		m_mediaPlayer.setDataSource(strURLMP3Stream);
+		m_mediaPlayer.prepare();
 		// if (!m_mediaPlayer.isPlaying())
 		// {
 		// m_mediaPlayer.start();
@@ -229,7 +231,7 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 
 		if (my_edittext_serverPort != "")
 			m_iUserPortNumber = Integer.parseInt(my_edittext_serverPort);
-
+		
 		strURL = String.format(strURLFormat, m_strUserHostName, m_iUserPortNumber);
 		
 		m_bUseMaxRequests = false;
@@ -241,8 +243,39 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 		}
 	}
 
+	private void ShowServerNotFound()
+	{
+	    AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(MainActivity.this);
+	    			 
+	    // set the title of the Alert Dialog
+	    alertDialogBuilder.setTitle("SqueezeBox Server Problem ?");
+	    			 
+	    // set dialog message
+	    alertDialogBuilder.setMessage("SqueezeBox Server is not responding")
+	    			      .setCancelable(false)
+	    			      .setPositiveButton("Continue", new DialogInterface.OnClickListener() {
+	    			                                    public void onClick(DialogInterface dialog,
+	    			                                            int id) {
+	    			                                        // if yes is clicked, close
+	    			                                        // current activity
+	    			                                        dialog.cancel();
+	    			                                    }
+	    			                                });
+	    			 
+	    AlertDialog alertDialog = alertDialogBuilder.create();
+	    alertDialog.show();		
+	}
+	
+	
 	private void ProcessJSONResponse(JSONObject result) {
 		try {
+			
+			if (result == null)
+			{
+				m_progressDialog.cancel();
+				ShowServerNotFound();
+				return;
+			}
 			Log.w("STU", result.toString(2));
 
 			String params = result.getString("params");
@@ -418,6 +451,9 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 				Toast.makeText(MainActivity.this, message, Toast.LENGTH_LONG)
 						.show();
 
+				MainActivity.m_progressDialog = ProgressDialog.show(MainActivity.this,
+						"", "Loading. Please wait...", true);
+				
 				for (int i = 0; i < m_playeridList.size(); i++) {
 					String strPlayerId = m_playeridList.get(i);
 
@@ -431,10 +467,7 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 	}
 
 	public static String SendTrackPlayMessage(MainActivity context, String strPlayerId, int iStart, int iItemsPerResponse, CSong song) {
-		// MainActivity.progressBar.setVisibility(View.VISIBLE);
 
-		MainActivity.m_progressDialog = ProgressDialog.show(context, "",
-				"Loading. Please wait...", true);
 		// Send play message with track to play
 		JSONObject object = new JSONObject();
 
@@ -566,8 +599,9 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 		// Request songs from album
 		// {"id":1,"method":"slim.request","params":[null,["songs","0","100000","tags:psdtyJualekojwxNpg","album_id:1"]]}
 		// MainActivity.progressBar.setVisibility(View.VISIBLE);
-		MainActivity.m_progressDialog = ProgressDialog.show(context, "",
-				"Loading. Please wait...", true);
+		MainActivity.m_progressDialog = ProgressDialog.show(context,
+				"", "Loading. Please wait...", true);
+		
 		JSONObject object = new JSONObject();
 
 		String paramStr = String
@@ -601,6 +635,7 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 		// {"id":1,"method":"slim.request","params":[null,["albums","0","2","tags:ljya"]]}
 		MainActivity.m_progressDialog = ProgressDialog.show(MainActivity.this,
 				"", "Loading. Please wait...", true);
+		
 		// MainActivity.progressBar.setVisibility(View.VISIBLE);
 		JSONObject object = new JSONObject();
 
@@ -735,9 +770,11 @@ public class MainActivity extends Activity implements OnBufferingUpdateListener,
 			} catch (ClientProtocolException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return null;
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
+				return null;
 			}
 
 			HttpEntity resultentity = httpresponse.getEntity();

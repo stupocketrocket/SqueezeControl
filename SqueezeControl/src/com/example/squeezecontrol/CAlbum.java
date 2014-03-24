@@ -38,7 +38,7 @@ public class CAlbum {
 		if (m_strArtworkId != null)
 			strArtworkId = m_strArtworkId;
 		
-		String strAlbumArtPath = String.format(m_strAlbumArtFormat, MainActivity.m_strHostName, MainActivity.m_iPortNumber, strArtworkId, iSize, iSize);
+		String strAlbumArtPath = String.format(m_strAlbumArtFormat, MainActivity.m_strUserHostName, MainActivity.m_iUserPortNumber, strArtworkId, iSize, iSize);
 		return strAlbumArtPath;
 	}
 	
